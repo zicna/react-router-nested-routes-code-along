@@ -3,8 +3,8 @@
 ## Objectives
 
 - Describe how to render JSX within a `Route`
-- Describe how __React Router__ allows nesting routes and URL parameters
-- Explain how to organize routes in a standard __React & React Router__
+- Describe how **React Router** allows nesting routes and URL parameters
+- Explain how to organize routes in a standard **React & React Router**
   application
 
 ## Overview
@@ -33,7 +33,7 @@ the other for the details of a specific item. We could call them `List` and
 `Item`. Then, we create _one_ parent component for both that handles state. The
 parent component could keep track of all the list data and which particular item
 is currently selected, and pass down props to both components. This would work,
-but there are limitations. One problem with this set up is that changing state
+but there are limitations. One problem with this setup is that changing state
 won't change the URL, meaning there is no way to provide a link directly to one
 particular item from our list of resources.
 
@@ -41,10 +41,10 @@ Apps like YouTube display a list of videos, and clicking on any one video will
 load it, but every time you open a particular video, _the URL changes_. YouTube
 assigns unique values to each video (something like
 [`dQw4w9WgXcQ`](https://www.youtube.com/watch?v=dQw4w9WgXcQ)). When viewing that
-video, the value is listed as part of the URL.  This value is a URL parameter
+video, the value is listed as part of the URL. This value is a URL parameter
 and allows for convenient sharing and bookmarking.
 
-We've seen already that we can use __React-Router__ to alter the URL of a React
+We've seen already that we can use **React-Router** to alter the URL of a React
 app. The challenge here though - how do we set up our `Route`s so that they can
 produce URLs with parameters that correspond to resources we want to display in
 our app?
@@ -55,7 +55,7 @@ So far, we've only seen `Route`s side by side, but that won't really work in
 this example. When a list item is clicked, we want to see the details of that
 item, but **we still want the list to display**.
 
-Instead of listing two `Route`s side by side, with __React-Router__, we can make
+Instead of listing two `Route`s side by side, with **React-Router**, we can make
 the master-detail pattern by making our `Item` component the _child_ of the
 `List` component.
 
@@ -64,7 +64,7 @@ displays a list of videos. Clicking on any video should keep our list of videos
 on the page, but also display details on the selected video. This should be
 updated in the URL - the URL should change to `/videos/:videoId`, where
 `:videoId` is a unique value (this is slightly different than how YouTube works
-but the concepts are similar). Using nested __React-Router__, we can write our
+but the concepts are similar). Using nested **React-Router**, we can write our
 application so one component, the `List` (of videos) renders using a `Route`
 that matches the path `/videos`. Then, within `List`, we add a _second_ `Route`
 that renders `Item` when the path matches `/videos/:videoId`.
@@ -78,13 +78,13 @@ component. `App` has some dummy movie data provided in state for us (normally,
 we would likely be fetching this info).
 
 ```js
- state = {
-    movies: {
-      1: { id: 1, title: 'A River Runs Through It' },
-      2: { id: 2, title: 'Se7en' },
-      3: { id: 3, title: 'Inception' }
-    }
-  }
+state = {
+  movies: {
+    1: { id: 1, title: "A River Runs Through It" },
+    2: { id: 2, title: "Se7en" },
+    3: { id: 3, title: "Inception" },
+  },
+};
 ```
 
 `App` also has `Router` wrapping everything inside the JSX code. All JSX wrapped within
@@ -108,15 +108,16 @@ case, that is _all_ of our components.
 Notice what is happening on the second `Route`. When rendering a component
 through a `Route` with the `render` prop, the function accepts an argument,
 `routerProps`. When the path matches the URL, the `Route` will call the function
-inside `render` and pass in the current information available able the route,
+inside `render` and pass in the current information available about the route,
 including the URL path that caused the `Route` to render. This is not possible
 with the regular `component` prop on `Route`s we've seen before.
 
 So, if the URL path matches `/movies`, the function inside `render` is called.
-The object that is passed in, `routerProps`, get passed in as props. Using the
-spread operator (`{...routerProps}`) will result in the creation of props for
-each key present inside the `routerProps` object. This isn't vital but is a
-helpful way to pass many props in without too much code clutter.
+The object that is passed in, `routerProps`, gets passed to the `MoviesPage`
+component as props. Using the spread operator (`{...routerProps}`) will result
+in the creation of props for each key present inside the `routerProps` object.
+This isn't vital but is a helpful way to pass many props in without too much
+code clutter.
 
 So, the component, `MoviesPage`, receives props _from_ the `Route` that contain
 information on the route. In addition, we can also pass in other props, as we
@@ -128,17 +129,17 @@ loading our `MoviesList` component and passing in the movies we received from
 
 ```javascript
 // ./src/containers/MoviesPage.js
-import React from 'react';
-import { Route } from 'react-router-dom';
-import MoviesList from '../components/MoviesList';
+import React from "react";
+import { Route } from "react-router-dom";
+import MoviesList from "../components/MoviesList";
 
 const MoviesPage = ({ movies }) => (
   <div>
     <MoviesList movies={movies} />
   </div>
-)
+);
 
-export default MoviesPage
+export default MoviesPage;
 ```
 
 At the moment, our `MoviesPage` component is purely presentational. It is
@@ -146,24 +147,22 @@ simply the middle component between `App` and `MoviesList`, but we will come
 back to this component in a moment. Right now, if we try to run our React app,
 we get an error because `MoviesList` is not defined yet!
 
-Let's create our `MoviesList` component to render __React Router__ `Link`s for
+Let's create our `MoviesList` component to render **React Router** `Link`s for
 each movie:
 
 ```javascript
 // ./src/components/MoviesList.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const MoviesList = ({ movies }) => {
-  const renderMovies = Object.keys(movies).map(movieID =>
-    <Link key={movieID} to={`/movies/${movieID}`}>{movies[movieID].title}</Link>
-  );
+  const renderMovies = Object.keys(movies).map((movieID) => (
+    <Link key={movieID} to={`/movies/${movieID}`}>
+      {movies[movieID].title}
+    </Link>
+  ));
 
-  return (
-    <div>
-      {renderMovies}
-    </div>
-  );
+  return <div>{renderMovies}</div>;
 };
 
 export default MoviesList;
@@ -195,7 +194,7 @@ one of the movie names will cause the URL to display _that_ movie's id.
 
 ### Linking to the Show
 
-Right now, we're using __React Router__ to display the `MoviesPage` component
+Right now, we're using **React Router** to display the `MoviesPage` component
 when the URL is `/movies`.
 
 Next, we'll add in our first nested route within `MoviesPage` so that going to
@@ -207,17 +206,16 @@ see that this component will need to dynamically figure out which Movie it
 should render.
 
 ```javascript
-// ./src/containers/MovieShow.js
-import React from 'react';
+// ./src/components/MovieShow.js
+import React from "react";
 
-const MovieShow = props => {
-
+const MovieShow = (props) => {
   return (
     <div>
       <h3>Movies Show Component!</h3>
     </div>
   );
-}
+};
 
 export default MovieShow;
 ```
@@ -228,22 +226,27 @@ route matches `/movies/:movieId`.
 
 ```javascript
 // .src/containers/MoviesPage.js
-import React from 'react';
-import { Route } from 'react-router-dom';
-import MoviesList from '../components/MoviesList';
-import MovieShow from '../components/MovieShow';
+import React from "react";
+import { Route } from "react-router-dom";
+import MoviesList from "../components/MoviesList";
+// import the `MovieShow` component:
+import MovieShow from "../components/MovieShow";
 
+// Here we add `match` to the arguments so we can access the path information
+// in `routerProps` that is passed from App.js
 const MoviesPage = ({ match, movies }) => (
   <div>
     <MoviesList movies={movies} />
-    <Route path={`${match.url}/:movieId`} component={MovieShow}/>
+    // We also add a `Route` component that will render `MovieShow` // when a movie
+    is selected
+    <Route path={`${match.url}/:movieId`} component={MovieShow} />
   </div>
-)
+);
 
-export default MoviesPage
+export default MoviesPage;
 ```
 
-Above, we've  imported `MovieShow` and added a `Route` component. You will
+Above, we've imported `MovieShow` and added a `Route` component. You will
 notice that we are now inheriting `match` from `this.props`. This comes from the
 `routerProps` passed in from `App`. This is a POJO (plain old Javascript object)
 that contains the current URL. Using `match`, we can show stuff depending on
@@ -258,28 +261,25 @@ since each `movieID` is different.
 
 ```javascript
 // ./src/components/MoviesList.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const MoviesList = ({ movies }) => {
-  const renderMovies = Object.keys(movies).map(movieID =>
-    <Link key={movieID} to={`/movies/${movieID}`}>{movies[movieID].title}</Link>
-  );
+  const renderMovies = Object.keys(movies).map((movieID) => (
+    <Link key={movieID} to={`/movies/${movieID}`}>
+      {movies[movieID].title}
+    </Link>
+  ));
 
-  return (
-    <div>
-      {renderMovies}
-    </div>
-  );
+  return <div>{renderMovies}</div>;
 };
 
 export default MoviesList;
 ```
 
 Refresh the page at `/movies`. Now, clicking a link changes the route, but we're
-not actually seeing any content about that movie that would be on our MovieShow
-page. You should only see the text `Movies Show Component!` under the
-navigation and movie links.
+not actually seeing any content about that movie on our MovieShow page. You should
+only see the text `Movies Show Component!` under the navigation and movie links.
 
 Just as we saw with `App`, the data we want to display on a particular
 `MovieShow` page is available in its parent, `MoviesPage`, as props. For
@@ -288,19 +288,23 @@ available within `MovieShow`.
 
 ```javascript
 // .src/containers/MoviesPage.js
-import React from 'react';
-import { Route } from 'react-router-dom';
-import MoviesList from '../components/MoviesList';
-import MovieShow from '../components/MovieShow';
+import React from "react";
+import { Route } from "react-router-dom";
+import MoviesList from "../components/MoviesList";
+import MovieShow from "../components/MovieShow";
 
 const MoviesPage = ({ match, movies }) => (
   <div>
     <MoviesList movies={movies} />
-    <Route path={`${match.url}/:movieId`} component={<MovieShow movies={movies} /> }/>
+    // Adding code to pass the movies to the `MovieShow` component
+    <Route
+      path={`${match.url}/:movieId`}
+      component={<MovieShow movies={movies} />}
+    />
   </div>
-)
+);
 
-export default MoviesPage
+export default MoviesPage;
 ```
 
 This isn't enough though - `MovieShow` now has all the movies, but it doesn't
@@ -317,40 +321,49 @@ itself**. We can rewrite the `Route` in `MoviesPage` to do this:
 
 ```javascript
 // .src/containers/MoviesPage.js
-import React from 'react';
-import { Route } from 'react-router-dom';
-import MoviesList from '../components/MoviesList';
-import MovieShow from '../components/MovieShow';
+import React from "react";
+import { Route } from "react-router-dom";
+import MoviesList from "../components/MoviesList";
+import MovieShow from "../components/MovieShow";
 
 const MoviesPage = ({ match, movies }) => (
   <div>
     <MoviesList movies={movies} />
-    <Route path={`${match.url}/:movieId`} render={routerProps => <MovieShow {...routerProps} movies={movies} /> }/>
+    // Here we replace the `component` prop with the `render` prop so we can pass
+    the // route information to the `MovieShow` component
+    <Route
+      path={`${match.url}/:movieId`}
+      render={(routerProps) => <MovieShow {...routerProps} movies={movies} />}
+    />
   </div>
-)
+);
 
-export default MoviesPage
+export default MoviesPage;
 ```
 
 Now, all the key/value pairs within `routerProps` are also passed into
 `MovieShow` as props. Just like before, one of the props we receive from the
-`Route` is `match`, and `match` happens to contain **_all the parameters from
-the URL!_** These parameters are stored as key/value pairs in `match.params`.
+`Route` is `match`, and `match` contains **all the parameters from
+the URL!** These parameters are stored as key/value pairs in `match.params`.
 The key corresponds to whatever we named the parameter in our `Route`, so in
-this case, the parameter will `movieId`. We can update `MovieShow` to utilize
+this case, the parameter will be `movieId`. We can update `MovieShow` to utilize
 this parameter in conjunction with the `movies` data that was passed down:
 
 ```js
 // .src/components/MovieShow.js
-import React from 'react';
+import React from "react";
 
-const MovieShow = ({match, movies}) => {
+// Here we add `match` to the arguments so we can access the path information
+// in `routerProps` that is passed from MoviesPage.js
+const MovieShow = ({ match, movies }) => {
   return (
     <div>
-      <h3>{ movies[match.params.movieId].title }</h3>
+      // And here we access the `movieId` stored in match.params to render //
+      information about the selected movie
+      <h3>{movies[match.params.movieId].title}</h3>
     </div>
   );
-}
+};
 
 export default MovieShow;
 ```
@@ -359,7 +372,7 @@ Here, we've got our `movies` as an object in props. We've also got our Router
 props - from which we've extracted `match`. Within the `match` object is
 `params`. In this case, we only have the one parameter, `movieId`, which we
 defined in `MoviesPage`. Combining info from these two props lets us access the
-specific movie that's key matches the `movieId` from the URL path, resulting in
+specific movie whose key matches the `movieId` from the URL path, resulting in
 the correct movie title being displayed!
 
 We've succeeded in creating a "Master-Detail" interface - the list of movies is
@@ -373,25 +386,31 @@ With our main task completed, let's take a quick step back and ask a question -
 what happens in this app when we visit `http://localhost:3000/movies` without a
 particular `movieId` parameter? Well, `MoviesPage` renders due to the top-level
 `/movies` `Route`, but `MoviesPage` will only render `MoviesList`. There is no
-default `Route`, so we don't see anything. If we want to create a default 
+default `Route`, so we don't see anything. If we want to create a default
 `Route` here, we can do so using the `match` prop once again:
 
 ```js
 // .src/containers/MoviesPage.js
-import React from 'react';
-import { Route } from 'react-router-dom';
-import MoviesList from '../components/MoviesList';
-import MovieShow from '../components/MovieShow';
+import React from "react";
+import { Route } from "react-router-dom";
+import MoviesList from "../components/MoviesList";
+import MovieShow from "../components/MovieShow";
 
 const MoviesPage = ({ match, movies }) => (
   <div>
     <MoviesList movies={movies} />
-    <Route exact path={match.url} render={() => <h3>Choose a movie from the list above</h3>}/>
-    <Route path={`${match.url}/:movieId`} render={routerProps => <MovieShow {...routerProps} movies={movies} /> }/>
+    // Adding code to show a message to the user to select a movie if they haven't
+    yet
+    <Route
+      exact
+      path={match.url}
+      render={() => <h3>Choose a movie from the list above</h3>}
+    />
+    <Route path={`${match.url}/:movieId`} render={(routerProps) => <MovieShow {...routerProps} movies={movies} />} />
   </div>
-)
+);
 
-export default MoviesPage
+export default MoviesPage;
 ```
 
 Now, when we visit `http://localhost:3000/movies`, we see a message that only
@@ -405,8 +424,8 @@ To briefly review - we are able to nest `Route`s within each other. Using the
 Router props we receive from the top-level `Route`, we can nest a second `Route`
 that extends the URL path of the first. We can actually nest `Route`s as many
 times as we would like, so if we wanted, we could go fully RESTful and create
-nested `Route`s _inside_ `MovieShow`, allowing us to write URL paths that would
-look something like this:
+nested `Route`s inside `MovieShow` as well, allowing us to write URL paths that
+would look something like this:
 
 ```test
 http://localhost:3000/movies/:movieId/edit
@@ -416,7 +435,7 @@ To get nested `Route`s to work, we need to utilize route information that is
 stored in the `match` props. `match` contains both the current URL path in
 `match.url`, as well as any parameters in `match.params`. We define the
 parameter names in a `Route`'s path by prepending a colon (`:`) to the front of
-the name. This name will then show up as a key inside `match.params`. 
+the name. This name will then show up as a key inside `match.params`.
 
 We can use parameters to look up specific data - in this case matching the key
 of a `movies` object with the URL parameter, `:movieId`, allowed us to display a
@@ -429,8 +448,3 @@ data dynamically.
 In the early days of the internet, we would have had to create separate HTML
 pages **_for each movie in this application_**. Now, with React, we can write
 abstract components that fill in the data for each 'page' on demand. Very cool!
-
-<p
-class='util--hide'>View <a
-href='https://learn.co/lessons/react-router-nested-routes'>React Router Nested
-Routes</a> on Learn.co and start learning to code for free.</p>
